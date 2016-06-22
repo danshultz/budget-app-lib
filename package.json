@@ -1,0 +1,19 @@
+{
+  "name": "budget-app-lib",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec --recursive"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
+    "sqlite": "^2.0.2"
+  },
+  "dependencies": {
+    "sqlite": "^2.0.2"
+  }
+}
