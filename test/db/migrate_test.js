@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const db = require('../../lib/db');
 
-const latestMigration = '1';
+const latestMigration = '2';
 const createdTables = ['migrations', 'accounts', 'transactions'];
 
 describe('migrating', function () {
