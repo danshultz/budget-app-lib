@@ -13,7 +13,7 @@ CREATE TABLE persons (
 )
 `
 
-describe('create', function () {
+describe('db/action/utils', function () {
   beforeEach(function (done) {
     this.instance = db.getInstance(':memory:');
     this.instance.run(TEST_MIGRATION).then(() => done());
@@ -23,47 +23,41 @@ describe('create', function () {
     db.clearInstances();
   });
 
-  it('creates a record', function (done) {
-    let recordToCreate = { name: 'bob', number: '123' };
-    dbUtils.insert(this.instance, 'persons', recordToCreate)
-      .then((result) => {
-        expect(result.id).to.equal(1);
-        expect(result.name).to.equal('bob');
-        expect(result.created_at).to.not.equal(null);
-        expect(result.updated_at).to.not.equal(null);
-        done();
-      })
-      .catch(done);
+  describe('create', function () {
+    it('creates a record', function (done) {
+      let recordToCreate = { name: 'bob', number: '123' };
+      dbUtils.insert(this.instance, 'persons', recordToCreate)
+        .then((result) => {
+          expect(result.id).to.equal(1);
+          expect(result.name).to.equal('bob');
+          expect(result.created_at).to.not.equal(null);
+          expect(result.updated_at).to.not.equal(null);
+          done();
+        })
+        .catch(done);
+    });
   });
+
+  describe('findOrCreate', function () {
+    it('creates a record', function (done) {
+      let recordToCreate = { name: 'bob', number: '123' };
+
+      dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['id'])
+        .then((result) => {
+          expect(result.id).to.equal(1);
+          expect(result.name).to.equal('bob');
+        })
+        .then(() => dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['name']))
+        .then((result) => {
+          expect(result.id).to.equal(1);
+          expect(result.name).to.equal('bob');
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  describe('update', function () {
+  })
+
 });
-
-describe('findOrCreate', function () {
-  beforeEach(function (done) {
-    this.instance = db.getInstance(':memory:');
-    this.instance.run(TEST_MIGRATION).then(() => done());
-  });
-
-  afterEach(function () {
-    db.clearInstances();
-  });
-
-  it('creates a record', function (done) {
-    let recordToCreate = { name: 'bob', number: '123' };
-
-    dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['id'])
-      .then((result) => {
-        expect(result.id).to.equal(1);
-        expect(result.name).to.equal('bob');
-      })
-      .then(() => dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['name']))
-      .then((result) => {
-        expect(result.id).to.equal(1);
-        expect(result.name).to.equal('bob');
-        done();
-      })
-      .catch(done);
-  });
-});
-
-describe('update', function () {
-})
