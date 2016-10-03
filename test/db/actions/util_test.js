@@ -58,6 +58,33 @@ describe('db/action/utils', function () {
   });
 
   describe('update', function () {
+    let createdRecord;
+
+    beforeEach(function (done) {
+      let recordToCreate = { name: 'bob', number: '123' };
+
+      dbUtils.insert(this.instance, 'persons', recordToCreate)
+        .then((result) => {
+          createdRecord = result;
+          done();
+        })
+        .catch(done);
+    });
+
+    it('updates a created record', function (done) {
+      let update = { id: createdRecord.id, name: 'jim' };
+
+      dbUtils.update(this.instance, 'persons', update)
+        .then((rowsChanged) => expect(rowsChanged).to.equal(1))
+        .then(() => dbUtils.find(this.instance, 'persons', { id: createdRecord.id }))
+        .then((result) => {
+          console.log(result);
+          expect(result).to.not.be.null;
+          expect(result.name).to.equal('jim');
+          done();
+        })
+        .catch(done);
+    });
   })
 
 });
