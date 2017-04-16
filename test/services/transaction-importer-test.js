@@ -8,14 +8,12 @@ var transactions = [{
   name: 'Interest Charge',
   postedAt: '2005-08-11 08:00:00',
   type: 'INT',
-  balance: 40
 }, {
   amount: 35000,
   fitId: '219868',
   name: 'Payment - Thank You',
   postedAt: '2005-08-11 08:00:00',
   type: 'CREDIT',
-  balance: 40
 }];
 
 
@@ -34,7 +32,7 @@ describe('importing transactions', function () {
   it('imports the transactions', function (done) {
     let importer = new TransactionImporter(this.instance, accountId);
 
-    importer.importOfxTransactions(transactions)
+    importer.import(transactions, 5000)
       .then(() => this.instance.all('SELECT * FROM transactions'))
       .then((data) => {
         expect(data.length).to.equal(2);
@@ -48,9 +46,11 @@ describe('importing transactions', function () {
           payee: null,
           check_number: null,
           amount: -2300,
-          balance: 40,
+          balance: 5000,
           account_id: 4
         });
+
+        expect(data[1].balance).to.equal(7300);
         done();
       })
       .catch(done);
