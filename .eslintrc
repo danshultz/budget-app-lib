@@ -1,8 +1,7 @@
 {
   "globals": { },
   "env": {
-    // I write for browser
-    "browser": true,
+    "browser": false,
     // in CommonJS
     "node": true,
 		"es6": true
