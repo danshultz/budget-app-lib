@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const db = require('../../lib/db');
 
-const latestMigration = '2';
+const latestMigration = '3';
 const createdTables = ['migrations', 'accounts', 'transactions'];
 
 describe('migrating', function () {
@@ -31,6 +31,20 @@ describe('migrating', function () {
         createdTables.forEach((table) => {
           expect(tableNames).to.include(table);
         });
+        done();
+      })
+      .catch(done);
+
+  });
+
+  it('adds the categories JSON column properly', function (done) {
+    let instance = db.getInstance(':memory:');
+
+    db.migrate(instance)
+      .then(() => instance.all('PRAGMA table_info(transactions);'))
+      .then((result) => {
+        const column = result.find((d) => d.name === 'categories')
+        expect(column).to.include({ type: 'JSON1', notnull: 0 })
         done();
       })
       .catch(done);
