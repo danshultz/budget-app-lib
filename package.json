@@ -13,6 +13,7 @@
     "mocha": "^2.5.3"
   },
   "dependencies": {
+    "ofx-parser": "danshultz/node-ofx-parser",
     "sqlite3": "^3.1.13"
   }
 }
