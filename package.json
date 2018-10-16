@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.5.3"
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
   },
   "dependencies": {
     "ofx-parser": "danshultz/node-ofx-parser",
