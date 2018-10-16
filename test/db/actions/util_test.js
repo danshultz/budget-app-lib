@@ -86,4 +86,38 @@ describe('db/action/utils', function () {
     });
   })
 
+  describe('findAll', function () {
+
+    beforeEach(function () {
+      let recordsToCreate = [
+        { name: 'bob', number: '123' },
+        { name: 'sam', number: '56' },
+        { name: 'jill', number: '56' },
+        { name: 'anna', number: '22' }
+      ]
+
+      let inserts = recordsToCreate.map((r) => dbUtils.insert(this.instance, 'persons', r))
+      return Promise.all(inserts)
+    });
+
+    it('selects all the records', function () {
+      return dbUtils.findAll(this.instance, 'persons', { number: 56 })
+        .then((records) => {
+          expect(records.length).to.equal(2);
+          expect(records[0]).to.deep.contain({ name: 'sam', number: 56 })
+          expect(records[1]).to.deep.contain({ name: 'jill', number: 56 })
+        });
+    })
+
+    it('selects all the records and orders them', function () {
+      return dbUtils.findAll(this.instance, 'persons', { number: 56 }, 'order by name')
+        .then((records) => {
+          expect(records.length).to.equal(2);
+          expect(records[0]).to.deep.contain({ name: 'jill', number: 56 })
+          expect(records[1]).to.deep.contain({ name: 'sam', number: 56 })
+        });
+    })
+
+  })
+
 });
