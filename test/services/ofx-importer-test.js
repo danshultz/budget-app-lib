@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 var path = require('path');
+const { noopLogger } = require('../support');
 const db = require('../../lib/db');
 const OfxImporter = require('../../lib/services/ofx-importer');
 
@@ -8,7 +9,7 @@ var FIXTURE_FILE = path.join(__dirname, '../fixtures/test1.ofx');
 describe('importing an ofx file', function () {
   beforeEach(function (done) {
     let instance = this.instance = db.getInstance(':memory:');
-    db.migrate(instance).then(done).catch(done);
+    db.migrate(instance, noopLogger).then(done).catch(done);
   });
 
   afterEach(function () {

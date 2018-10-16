@@ -1,4 +1,5 @@
 const { expect } = require('chai');
+const { noopLogger } = require('../support');
 const db = require('../../lib/db');
 const TransactionImporter = require('../../lib/services/transaction-importer');
 
@@ -22,7 +23,7 @@ var accountId = 4;
 describe('importing transactions', function () {
   beforeEach(function (done) {
     let instance = this.instance = db.getInstance(':memory:');
-    db.migrate(instance).then(done).catch(done);
+    db.migrate(instance, noopLogger).then(done).catch(done);
   });
 
   afterEach(function () {

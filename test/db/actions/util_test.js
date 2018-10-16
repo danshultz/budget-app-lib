@@ -78,7 +78,6 @@ describe('db/action/utils', function () {
         .then((rowsChanged) => expect(rowsChanged).to.equal(1))
         .then(() => dbUtils.find(this.instance, 'persons', { id: createdRecord.id }))
         .then((result) => {
-          console.log(result);
           expect(result).to.not.be.null;
           expect(result.name).to.equal('jim');
           done();

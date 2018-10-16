@@ -1,4 +1,5 @@
 const { expect } = require('chai');
+const { noopLogger } = require('../support');
 const db = require('../../lib/db');
 
 const latestMigration = '3';
@@ -12,7 +13,7 @@ describe('migrating', function () {
   it('migrates a new database', function (done) {
     let instance = db.getInstance(':memory:');
 
-    db.migrate(instance)
+    db.migrate(instance, noopLogger)
       .then(() => instance.get('SELECT migration from migrations order by migration DESC'))
       .then((result) => {
         expect(result).to.deep.equal({ migration: latestMigration });
@@ -24,7 +25,7 @@ describe('migrating', function () {
   it('creates all the tables', function (done) {
     let instance = db.getInstance(':memory:');
 
-    db.migrate(instance)
+    db.migrate(instance, noopLogger)
       .then(() => instance.all('SELECT name FROM sqlite_master WHERE type=\'table\''))
       .then((result) => {
         let tableNames = result.map((r) => r.name);
@@ -40,7 +41,7 @@ describe('migrating', function () {
   it('adds the categories JSON column properly', function (done) {
     let instance = db.getInstance(':memory:');
 
-    db.migrate(instance)
+    db.migrate(instance, noopLogger)
       .then(() => instance.all('PRAGMA table_info(transactions);'))
       .then((result) => {
         const column = result.find((d) => d.name === 'categories')
