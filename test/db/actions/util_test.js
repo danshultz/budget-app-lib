@@ -14,35 +14,33 @@ CREATE TABLE persons (
 `
 
 describe('db/action/utils', function () {
-  beforeEach(function (done) {
+  beforeEach(function () {
     this.instance = db.getInstance(':memory:');
-    this.instance.run(TEST_MIGRATION).then(() => done());
+    return this.instance.run(TEST_MIGRATION)
   });
 
   afterEach(function () {
-    db.clearInstances();
+    return db.clearInstances();
   });
 
   describe('create', function () {
-    it('creates a record', function (done) {
+    it('creates a record', function () {
       let recordToCreate = { name: 'bob', number: '123' };
-      dbUtils.insert(this.instance, 'persons', recordToCreate)
+      return dbUtils.insert(this.instance, 'persons', recordToCreate)
         .then((result) => {
           expect(result.id).to.equal(1);
           expect(result.name).to.equal('bob');
           expect(result.created_at).to.not.equal(null);
           expect(result.updated_at).to.not.equal(null);
-          done();
         })
-        .catch(done);
     });
   });
 
   describe('findOrCreate', function () {
-    it('creates a record', function (done) {
+    it('creates a record', function () {
       let recordToCreate = { name: 'bob', number: '123' };
 
-      dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['id'])
+      return dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['id'])
         .then((result) => {
           expect(result.id).to.equal(1);
           expect(result.name).to.equal('bob');
@@ -51,38 +49,30 @@ describe('db/action/utils', function () {
         .then((result) => {
           expect(result.id).to.equal(1);
           expect(result.name).to.equal('bob');
-          done();
         })
-        .catch(done);
     });
   });
 
   describe('update', function () {
     let createdRecord;
 
-    beforeEach(function (done) {
+    beforeEach(function () {
       let recordToCreate = { name: 'bob', number: '123' };
 
-      dbUtils.insert(this.instance, 'persons', recordToCreate)
-        .then((result) => {
-          createdRecord = result;
-          done();
-        })
-        .catch(done);
+      return dbUtils.insert(this.instance, 'persons', recordToCreate)
+        .then((result) => { createdRecord = result; })
     });
 
-    it('updates a created record', function (done) {
+    it('updates a created record', function () {
       let update = { id: createdRecord.id, name: 'jim' };
 
-      dbUtils.update(this.instance, 'persons', update)
+      return dbUtils.update(this.instance, 'persons', update)
         .then((rowsChanged) => expect(rowsChanged).to.equal(1))
         .then(() => dbUtils.find(this.instance, 'persons', { id: createdRecord.id }))
         .then((result) => {
           expect(result).to.not.be.null;
           expect(result.name).to.equal('jim');
-          done();
         })
-        .catch(done);
     });
   })
 
