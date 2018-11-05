@@ -45,7 +45,7 @@ describe('migrating', function () {
       .then(() => instance.all('PRAGMA table_info(transactions);'))
       .then((result) => {
         const column = result.find((d) => d.name === 'categories')
-        expect(column).to.include({ type: 'JSON1', notnull: 1, dflt_value: "'{}'" })
+        expect(column).to.include({ type: 'JSON1', notnull: 1, dflt_value: "'[]'" })
         done();
       })
       .catch(done);
