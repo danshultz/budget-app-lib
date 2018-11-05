@@ -17,7 +17,7 @@ describe('importing an ofx file', function () {
   });
 
   it('imports the ofx records and returns them', function (done) {
-    ofxImporter = new OfxImporter(this.instance);
+    ofxImporter = new OfxImporter(this.instance, noopLogger);
     ofxImporter.import(FIXTURE_FILE)
       .then(({ accountRecord, transactionRecords }) => {
         expect(accountRecord).to.deep.contain({
@@ -48,7 +48,7 @@ describe('importing an ofx file', function () {
   })
 
   it('it can be run multiple times in a row and does not create duplicate records', function (done) {
-    ofxImporter = new OfxImporter(this.instance);
+    ofxImporter = new OfxImporter(this.instance, noopLogger);
     ofxImporter.import(FIXTURE_FILE)
       .then(() => ofxImporter.import(FIXTURE_FILE))
       .then(() => ofxImporter.import(FIXTURE_FILE))
