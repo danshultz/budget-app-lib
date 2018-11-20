@@ -49,7 +49,7 @@ var transactionData = [{
   amount: -50,
   balance: 10100,
   check_number: '',
-  date: '2018-10-07 12:00:00',
+  date: '2018-08-12 12:00:00',
   description: null,
   fit_id: '4223317601201810108',
   memo: 'Fit and Fast',
@@ -69,36 +69,50 @@ describe('fetching transactions', function () {
     db.clearInstances();
   });
 
-  it('returns all transactions by default', function () {
-    const transactionLoader = new TransactionLoader(this.instance);
-    return transactionLoader.getTransactions().then(({ records, count }) => {
-      expect(records.length).to.eq(4);
-      expect(count).to.eq(4);
+  describe('#getTransactions', function () {
+
+    it('returns all transactions by default', function () {
+      const transactionLoader = new TransactionLoader(this.instance);
+      return transactionLoader.getTransactions().then(({ records, count }) => {
+        expect(records.length).to.eq(4);
+        expect(count).to.eq(4);
+      })
+    })
+
+    it('returns transactions by account', function () {
+      const transactionLoader = new TransactionLoader(this.instance);
+      return transactionLoader.getTransactions({ accountId: 2 }).then(({ records, count }) => {
+        expect(records.length).to.eq(1);
+        expect(count).to.eq(1);
+      })
+    })
+
+    it('returns transactions by pages', function () {
+      const transactionLoader = new TransactionLoader(this.instance);
+      return transactionLoader.getTransactions({ page: 2, pageSize: 3 }).then(({ records, count }) => {
+        expect(records.length).to.eq(1);
+        expect(count).to.eq(4);
+      })
+    })
+
+    it('returns transactions by pages and accounts', function () {
+      const transactionLoader = new TransactionLoader(this.instance);
+      return transactionLoader.getTransactions({ accountId: 1, page: 2, pageSize: 1 }).then(({ records, count }) => {
+        expect(records.length).to.eq(1);
+        expect(count).to.eq(3);
+      })
+    })
+
+  })
+
+  describe('#getTransactionsForMonth', function () {
+    it('returns all transactions for a given month and year', function () {
+      const transactionLoader = new TransactionLoader(this.instance);
+      return transactionLoader.getTransactionsForMonth({ month: 8, year: 2018 }).then((records) => {
+        expect(records.length).to.eq(1);
+      })
     })
   })
 
-  it('returns transactions by account', function () {
-    const transactionLoader = new TransactionLoader(this.instance);
-    return transactionLoader.getTransactions({ accountId: 2 }).then(({ records, count }) => {
-      expect(records.length).to.eq(1);
-      expect(count).to.eq(1);
-    })
-  })
-
-  it('returns transactions by pages', function () {
-    const transactionLoader = new TransactionLoader(this.instance);
-    return transactionLoader.getTransactions({ page: 2, pageSize: 3 }).then(({ records, count }) => {
-      expect(records.length).to.eq(1);
-      expect(count).to.eq(4);
-    })
-  })
-
-  it('returns transactions by pages and accounts', function () {
-    const transactionLoader = new TransactionLoader(this.instance);
-    return transactionLoader.getTransactions({ accountId: 1, page: 2, pageSize: 1 }).then(({ records, count }) => {
-      expect(records.length).to.eq(1);
-      expect(count).to.eq(3);
-    })
-  })
 
 });
