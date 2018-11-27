@@ -26,7 +26,8 @@ describe('importing an ofx file', function () {
           account_type: 'CHECKING',
           account_id: '123456',
           bank_id: '000000123',
-          balance: 947148
+          balance: 947148,
+          balance_posted_at: '2018-10-15 12:00:00'
         })
 
         expect(transactionRecords.length).to.equal(5);
@@ -60,6 +61,8 @@ describe('importing an ofx file', function () {
           account_type: 'CHECKING',
           account_id: '123456',
           bank_id: '000000123',
+          balance: 947148,
+          balance_posted_at: '2018-10-15 12:00:00'
         })
 
         expect(transactionRecords.length).to.equal(5);
