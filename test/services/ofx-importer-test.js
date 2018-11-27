@@ -26,6 +26,7 @@ describe('importing an ofx file', function () {
           account_type: 'CHECKING',
           account_id: '123456',
           bank_id: '000000123',
+          balance: 947148
         })
 
         expect(transactionRecords.length).to.equal(5);
