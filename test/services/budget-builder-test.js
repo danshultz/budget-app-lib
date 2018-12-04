@@ -56,5 +56,44 @@ describe('building a budget', function () {
 
   });
 
+  describe('#setMonthlyCategoryAmount', function () {
 
+    it('sets the category amount', function () {
+      const [year, month] = [2018, 1];
+      const budgetBuilder = new BudgetBuilder(this.instance);
+
+      // insert initial category total
+      return budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 12300 })
+        // fetch budget_entries record, assume single record created
+        .then(() => dbUtils.find(this.instance, 'budget_entries', { id: 1 }))
+        // verify record values
+        .then((budgetEntryRecord) => {
+          expect(budgetEntryRecord).to.deep.contain({
+            budget_id: 1, // it created a default record
+            transaction_category_id: 12,
+            amount: 12300
+          })
+        })
+    })
+
+    it('updates the category amount', function () {
+      const [year, month] = [2018, 1];
+      const budgetBuilder = new BudgetBuilder(this.instance);
+
+      // insert initial category total
+      return budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 12300 })
+        // update the record
+        .then(() => budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 52300 }))
+        // fetch budget_entries record, assume single record created
+        .then(() => dbUtils.find(this.instance, 'budget_entries', { id: 1 }))
+        // verify record values
+        .then((budgetEntryRecord) => {
+          expect(budgetEntryRecord).to.deep.contain({
+            budget_id: 1, // it created a default record
+            transaction_category_id: 12,
+            amount: 52300
+          })
+        })
+    })
+  });
 });
