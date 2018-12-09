@@ -45,4 +45,23 @@ describe('fetching a budget', function () {
         })
       })
   });
+
+  it('returns totals for a budget', function () {
+    const year = 2018;
+    const budgetLoader = new BudgetLoader(this.instance)
+
+    return budgetFactory.create(this.instance, { year, month: 1, totalIncome: 43200 })
+      .then(() => budgetFactory.create(this.instance, { year, month: 2, totalIncome: 22100 }))
+      .then(() => budgetLoader.fetchBudgetTotals({ endYear: year, endMonth: 2 }))
+      .then((budgetTotals) => {
+        expect(budgetTotals).to.deep.contain({
+          totalIncome: 43200 + 22100,
+          budgetTotals: [{
+            transaction_category_id: 12,
+            amount: 5000 + 5000
+          }]
+        })
+      })
+
+  })
 });
