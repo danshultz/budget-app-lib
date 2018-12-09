@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "chai-as-promised": "^7.1.1",
+    "lodash": "^4.17.11",
     "ofx-parser": "danshultz/node-ofx-parser",
     "sqlite3": "^3.1.13"
   }
