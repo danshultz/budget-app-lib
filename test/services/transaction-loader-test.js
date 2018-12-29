@@ -56,6 +56,7 @@ var transactionData = [{
   name: '',
   payee: '',
   type: 'DEBIT',
+  categories: JSON.stringify([{ key: 1, amount: -50 }])
 }];
 
 describe('fetching transactions', function () {
@@ -97,12 +98,24 @@ describe('fetching transactions', function () {
 
     it('returns transactions by pages and accounts', function () {
       const transactionLoader = new TransactionLoader(this.instance);
-      return transactionLoader.getTransactions({ accountId: 1, page: 2, pageSize: 1 }).then(({ records, count }) => {
+      const filters = { accountId: 1, page: 2, pageSize: 1 };
+
+      return transactionLoader.getTransactions(filters).then(({ records, count }) => {
         expect(records.length).to.eq(1);
         expect(count).to.eq(3);
       })
     })
 
+    it('returns transactions by account and uncategorized', function () {
+      const transactionLoader = new TransactionLoader(this.instance);
+      const filters = { uncategorizedOnly: true, accountId: 1 };
+
+      return transactionLoader.getTransactions(filters).then(({ records, count }) => {
+        // returns both uncategorized transactions instead of all 3 for the account
+        expect(records.length).to.eq(2);
+        expect(count).to.eq(2);
+      })
+    })
   })
 
   describe('#getTransactionsForMonth', function () {
