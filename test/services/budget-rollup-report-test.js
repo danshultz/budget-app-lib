@@ -90,10 +90,10 @@ describe('Budget Rollup Report', function () {
       .then(() => budgetRollupReport.getReport({ endYear: year, endMonth: 10 }))
       .then((budgetReport) => {
         expect(budgetReport).to.deep.equal([
-          { transactionCategoryId: 5, budgetAmount: null, transactionAmount: -600 },
-          { transactionCategoryId: 12, budgetAmount: 9000, transactionAmount: -1550 },
-          { transactionCategoryId: 18, budgetAmount: null, transactionAmount: -5000 },
-          { transactionCategoryId: 99, budgetAmount: 1234, transactionAmount: null }
+          { categoryId: 5, budgetAmount: null, transactionAmount: -600 },
+          { categoryId: 12, budgetAmount: 9000, transactionAmount: -1550 },
+          { categoryId: 18, budgetAmount: null, transactionAmount: -5000 },
+          { categoryId: 99, budgetAmount: 1234, transactionAmount: null }
         ])
       })
 

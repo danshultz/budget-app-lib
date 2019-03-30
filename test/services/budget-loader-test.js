@@ -57,7 +57,7 @@ describe('fetching a budget', function () {
         expect(budgetTotals).to.deep.contain({
           totalIncome: 43200 + 22100,
           budgetTotals: [{
-            transaction_category_id: 12,
+            categoryId: 12,
             amount: 5000 + 5000
           }]
         })
