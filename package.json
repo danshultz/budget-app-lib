@@ -16,8 +16,8 @@
     "chai-as-promised": "^7.1.1",
     "graphql": "^14.5.8",
     "graphql-tools": "^4.0.6",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.20",
     "ofx-parser": "github:danshultz/node-ofx-parser",
-    "sqlite3": "^3.1.13"
+    "sqlite3": "^5.0.0"
   }
 }
