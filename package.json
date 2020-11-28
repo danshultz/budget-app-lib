@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "chai-as-promised": "^7.1.1",
-    "graphql": "^14.5.8",
-    "graphql-tools": "^4.0.6",
+    "graphql": "^15.4.0",
+    "graphql-tools": "^7.0.2",
     "lodash": "^4.17.20",
     "ofx-parser": "github:danshultz/node-ofx-parser",
     "sqlite3": "^5.0.0"
