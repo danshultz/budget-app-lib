@@ -21,7 +21,6 @@ describe('importing an ofx file', function () {
     ofxImporter.import(FIXTURE_FILE)
       .then(({ accountRecord, transactionRecords }) => {
         expect(accountRecord).to.deep.contain({
-          id: 1,
           name: 'FOO BANK',
           account_type: 'CHECKING',
           account_id: '123456',
@@ -32,7 +31,6 @@ describe('importing an ofx file', function () {
 
         expect(transactionRecords.length).to.equal(5);
         expect(transactionRecords[3]).to.deep.contain({
-          id: 4,
           account_id: 1,
           amount: -350000,
           check_number: '',
@@ -56,7 +54,6 @@ describe('importing an ofx file', function () {
       .then(() => ofxImporter.import(FIXTURE_FILE))
       .then(({ accountRecord, transactionRecords }) => {
         expect(accountRecord).to.deep.contain({
-          id: 1,
           name: 'FOO BANK',
           account_type: 'CHECKING',
           account_id: '123456',
@@ -67,7 +64,6 @@ describe('importing an ofx file', function () {
 
         expect(transactionRecords.length).to.equal(5);
         expect(transactionRecords[3]).to.deep.contain({
-          id: 4,
           account_id: 1,
           amount: -350000,
           check_number: '',
