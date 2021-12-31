@@ -56,7 +56,8 @@ var transactionData = [{
   name: '',
   payee: '',
   type: 'DEBIT',
-  categories: JSON.stringify([{ key: 1, amount: -50 }])
+  categories: JSON.stringify([{ key: 1, amount: -50 }]),
+  category_ids: JSON.stringify([1])
 }];
 
 describe('fetching transactions', function () {
@@ -114,6 +115,18 @@ describe('fetching transactions', function () {
         // returns both uncategorized transactions instead of all 3 for the account
         expect(records.length).to.eq(2);
         expect(count).to.eq(2);
+      })
+    })
+
+    it('returns transactions for a set of categories', function () {
+      const transactionLoader = new TransactionLoader(this.instance);
+      const filters = { categoryId: 1 };
+
+      return transactionLoader.getTransactions(filters).then(({ records, count }) => {
+        // returns both uncategorized transactions instead of all 3 for the account
+        expect(records.length).to.eq(1);
+        expect(count).to.eq(1);
+        expect(records[0].fit_id).to.eq('4223317601201810108')
       })
     })
   })

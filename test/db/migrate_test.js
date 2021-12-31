@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { noopLogger } = require('../support');
 const db = require('../../lib/db');
 
-const latestMigration = '6';
+const latestMigration = '7';
 const createdTables = [
   'accounts',
   'budgets',
