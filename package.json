@@ -16,6 +16,6 @@
     "chai-as-promised": "^7.1.1",
     "lodash": "^4.17.11",
     "ofx-parser": "github:danshultz/node-ofx-parser",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^5.1.7"
   }
 }
