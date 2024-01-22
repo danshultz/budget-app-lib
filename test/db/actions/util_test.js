@@ -16,7 +16,7 @@ CREATE TABLE persons (
 describe('db/action/utils', function () {
   beforeEach(function () {
     this.instance = db.getInstance(':memory:');
-    return this.instance.run(TEST_MIGRATION)
+    return this.instance.exec(TEST_MIGRATION)
   });
 
   afterEach(function () {
@@ -26,13 +26,12 @@ describe('db/action/utils', function () {
   describe('create', function () {
     it('creates a record', function () {
       let recordToCreate = { name: 'bob', number: '123' };
-      return dbUtils.insert(this.instance, 'persons', recordToCreate)
-        .then((result) => {
-          expect(result.id).to.equal(1);
-          expect(result.name).to.equal('bob');
-          expect(result.created_at).to.not.equal(null);
-          expect(result.updated_at).to.not.equal(null);
-        })
+      let result = dbUtils.insert(this.instance, 'persons', recordToCreate)
+
+      expect(result.id).to.equal(1);
+      expect(result.name).to.equal('bob');
+      expect(result.created_at).to.not.equal(null);
+      expect(result.updated_at).to.not.equal(null);
     });
   });
 
@@ -40,16 +39,13 @@ describe('db/action/utils', function () {
     it('creates a record', function () {
       let recordToCreate = { name: 'bob', number: '123' };
 
-      return dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['id'])
-        .then((result) => {
-          expect(result.id).to.equal(1);
-          expect(result.name).to.equal('bob');
-        })
-        .then(() => dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['name']))
-        .then((result) => {
-          expect(result.id).to.equal(1);
-          expect(result.name).to.equal('bob');
-        })
+      var result = dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['id'])
+      expect(result.id).to.equal(1);
+      expect(result.name).to.equal('bob');
+
+      result = dbUtils.findOrCreate(this.instance, 'persons', recordToCreate, ['name'])
+      expect(result.id).to.equal(1);
+      expect(result.name).to.equal('bob');
     });
   });
 
@@ -59,25 +55,22 @@ describe('db/action/utils', function () {
     beforeEach(function () {
       let recordToCreate = { name: 'bob', number: '123' };
 
-      return dbUtils.insert(this.instance, 'persons', recordToCreate)
-        .then((result) => { createdRecord = result; })
+      createdRecord = dbUtils.insert(this.instance, 'persons', recordToCreate)
     });
 
     it('updates a created record', function () {
       let update = { id: createdRecord.id, name: 'jim' };
 
-      return dbUtils.update(this.instance, 'persons', update)
-        .then((rowsChanged) => expect(rowsChanged).to.equal(1))
-        .then(() => dbUtils.find(this.instance, 'persons', { id: createdRecord.id }))
-        .then((result) => {
-          expect(result).to.not.be.null;
-          expect(result.name).to.equal('jim');
-        })
+      const result = dbUtils.update(this.instance, 'persons', update);
+      expect(result.changes).to.equal(1)
+
+      const updatedRecord = dbUtils.find(this.instance, 'persons', { id: createdRecord.id })
+      expect(updatedRecord).to.not.be.null;
+      expect(updatedRecord.name).to.equal('jim');
     });
   })
 
   describe('findAll', function () {
-
     beforeEach(function () {
       let recordsToCreate = [
         { name: 'bob', number: '123' },
@@ -86,28 +79,22 @@ describe('db/action/utils', function () {
         { name: 'anna', number: '22' }
       ]
 
-      let inserts = recordsToCreate.map((r) => dbUtils.insert(this.instance, 'persons', r))
-      return Promise.all(inserts)
+      return recordsToCreate.map((r) => dbUtils.insert(this.instance, 'persons', r))
     });
 
     it('selects all the records', function () {
-      return dbUtils.findAll(this.instance, 'persons', { number: 56 })
-        .then((records) => {
-          expect(records.length).to.equal(2);
-          expect(records[0]).to.deep.contain({ name: 'sam', number: 56 })
-          expect(records[1]).to.deep.contain({ name: 'jill', number: 56 })
-        });
+      const records = dbUtils.findAll(this.instance, 'persons', { number: 56 })
+      expect(records.length).to.equal(2);
+      expect(records[0]).to.deep.contain({ name: 'sam', number: 56 })
+      expect(records[1]).to.deep.contain({ name: 'jill', number: 56 })
     })
 
     it('selects all the records and orders them', function () {
-      return dbUtils.findAll(this.instance, 'persons', { number: 56 }, 'order by name')
-        .then((records) => {
-          expect(records.length).to.equal(2);
-          expect(records[0]).to.deep.contain({ name: 'jill', number: 56 })
-          expect(records[1]).to.deep.contain({ name: 'sam', number: 56 })
-        });
+      const records = dbUtils.findAll(this.instance, 'persons', { number: 56 }, 'order by name')
+      expect(records.length).to.equal(2);
+      expect(records[0]).to.deep.contain({ name: 'jill', number: 56 })
+      expect(records[1]).to.deep.contain({ name: 'sam', number: 56 })
     })
-
   })
 
 });
