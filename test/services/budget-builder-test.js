@@ -7,7 +7,7 @@ const BudgetBuilder = require('../../lib/services/budget-builder');
 describe('building a budget', function () {
   beforeEach(function () {
     const instance = this.instance = db.getInstance(':memory:');
-    return db.migrate(instance, noopLogger)
+    db.migrate(instance, noopLogger)
   });
 
   afterEach(function () {
@@ -21,17 +21,15 @@ describe('building a budget', function () {
       const budgetBuilder = new BudgetBuilder(this.instance);
 
       // insert initial budget total
-      return budgetBuilder.setMonthlyIncomeTotal({ year, month, total: 123400 })
-        // fetch budgets record
-        .then(() => dbUtils.find(this.instance, 'budgets', { year, month }))
-        // verify budget record values
-        .then((budgetRecord) => {
-          expect(budgetRecord).to.deep.contain({
-            month,
-            year,
-            total_income: 123400,
-          })
-        })
+      budgetBuilder.setMonthlyIncomeTotal({ year, month, total: 123400 });
+      // fetch budgets record
+      const budgetRecord = dbUtils.find(this.instance, 'budgets', { year, month });
+      // verify budget record values
+      expect(budgetRecord).to.deep.contain({
+        month,
+        year,
+        total_income: 123400,
+      });
     })
 
     it('updates budget total income', function () {
@@ -39,19 +37,17 @@ describe('building a budget', function () {
       const budgetBuilder = new BudgetBuilder(this.instance);
 
       // insert initial budget total
-      return budgetBuilder.setMonthlyIncomeTotal({ year, month, total: 123400 })
-        // update budget total
-        .then(() => budgetBuilder.setMonthlyIncomeTotal({ year, month, total: 523400 }))
-        // fetch budgets record
-        .then(() => dbUtils.find(this.instance, 'budgets', { year, month }))
-        // verify budget record values
-        .then((budgetRecord) => {
-          expect(budgetRecord).to.deep.contain({
-            month,
-            year,
-            total_income: 523400,
-          })
-        })
+      budgetBuilder.setMonthlyIncomeTotal({ year, month, total: 123400 });
+      // update budget total
+      budgetBuilder.setMonthlyIncomeTotal({ year, month, total: 523400 });
+      // fetch budgets record
+      const budgetRecord = dbUtils.find(this.instance, 'budgets', { year, month });
+      // verify budget record values
+      expect(budgetRecord).to.deep.contain({
+        month,
+        year,
+        total_income: 523400,
+      });
     })
 
   });
@@ -63,17 +59,15 @@ describe('building a budget', function () {
       const budgetBuilder = new BudgetBuilder(this.instance);
 
       // insert initial category total
-      return budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 12300 })
-        // fetch budget_entries record, assume single record created
-        .then(() => dbUtils.find(this.instance, 'budget_entries', { id: 1 }))
-        // verify record values
-        .then((budgetEntryRecord) => {
-          expect(budgetEntryRecord).to.deep.contain({
-            budget_id: 1, // it created a default record
-            transaction_category_id: 12,
-            amount: 12300
-          })
-        })
+      budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 12300 });
+      // fetch budget_entries record, assume single record created
+      const budgetEntryRecord = dbUtils.find(this.instance, 'budget_entries', { id: 1 });
+      // verify record values
+      expect(budgetEntryRecord).to.deep.contain({
+        budget_id: 1, // it created a default record
+        transaction_category_id: 12,
+        amount: 12300
+      });
     })
 
     it('updates the category amount', function () {
@@ -81,19 +75,17 @@ describe('building a budget', function () {
       const budgetBuilder = new BudgetBuilder(this.instance);
 
       // insert initial category total
-      return budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 12300 })
-        // update the record
-        .then(() => budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 52300 }))
-        // fetch budget_entries record, assume single record created
-        .then(() => dbUtils.find(this.instance, 'budget_entries', { id: 1 }))
-        // verify record values
-        .then((budgetEntryRecord) => {
-          expect(budgetEntryRecord).to.deep.contain({
-            budget_id: 1, // it created a default record
-            transaction_category_id: 12,
-            amount: 52300
-          })
-        })
+      budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 12300 });
+      // update the record
+      budgetBuilder.setMonthlyCategoryAmount({ year, month, categoryId: 12, amount: 52300 });
+      // fetch budget_entries record, assume single record created
+      const budgetEntryRecord = dbUtils.find(this.instance, 'budget_entries', { id: 1 });
+      // verify record values
+      expect(budgetEntryRecord).to.deep.contain({
+        budget_id: 1, // it created a default record
+        transaction_category_id: 12,
+        amount: 52300
+      });
     })
   });
 });

@@ -12,7 +12,7 @@ function createCategories (db, budgetRecord, categories) {
     }
   ));
 
-  return Promise.all(categoryInserts);
+  return categoryInserts;
 }
 
 function create (db, {
@@ -21,10 +21,9 @@ function create (db, {
   totalIncome=12300,
   categories=[defaultCategory]
 }={}) {
-  return dbUtils.insert(db, 'budgets', { year, month, total_income: totalIncome })
-    .then((budgetRecord) =>
-      createCategories(db, budgetRecord, categories).then(() => budgetRecord)
-    );
+  const budgetRecord = dbUtils.insert(db, 'budgets', { year, month, total_income: totalIncome })
+  createCategories(db, budgetRecord, categories);
+  return budgetRecord;
 }
 
 module.exports = {
