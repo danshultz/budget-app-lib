@@ -54,7 +54,6 @@ describe('db/action/utils', function () {
 
     beforeEach(function () {
       let recordToCreate = { name: 'bob', number: '123' };
-
       createdRecord = dbUtils.insert(this.instance, 'persons', recordToCreate)
     });
 
@@ -94,6 +93,33 @@ describe('db/action/utils', function () {
       expect(records.length).to.equal(2);
       expect(records[0]).to.deep.contain({ name: 'jill', number: 56 })
       expect(records[1]).to.deep.contain({ name: 'sam', number: 56 })
+    })
+  })
+
+  describe('createOrUpdate', function () {
+    let createdRecord;
+
+    beforeEach(function () {
+      let recordToCreate = { name: 'bob', number: '123' };
+      createdRecord = dbUtils.insert(this.instance, 'persons', recordToCreate)
+    });
+
+    it('updates the record', function () {
+      let update = { name: 'jim', number: '123' };
+
+      const result = dbUtils.createOrUpdate(this.instance, 'persons', update, ['number']);
+      expect(result.id).to.equal(1);
+      expect(result.name).to.equal('jim');
+      expect(result.number).to.equal('123');
+    })
+
+    it('it creates a record', function () {
+      let update = { name: 'jill', number: '999' };
+
+      const result = dbUtils.createOrUpdate(this.instance, 'persons', update, ['number']);
+      expect(result.id).to.equal(2);
+      expect(result.name).to.equal('jill');
+      expect(result.number).to.equal('999');
     })
   })
 
