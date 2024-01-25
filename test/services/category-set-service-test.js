@@ -23,9 +23,9 @@ var transactionData = {
 }
 
 describe('setting categories', function () {
-  beforeEach(function (done) {
+  beforeEach(function () {
     let instance = this.instance = db.getInstance(':memory:');
-    db.migrate(instance, noopLogger).then(done).catch(done);
+    db.migrate(instance, noopLogger);
   });
 
   afterEach(function () {
@@ -34,7 +34,11 @@ describe('setting categories', function () {
 
   it('fails when attempting to set categories for an invalid transaction', function () {
     let categorySetService = new CategorySetService(this.instance);
-    return expect(categorySetService.setCategories(99, null)).to.be.rejectedWith("transaction with id 99 doesn't exist");
+    assert.throws(
+      () => { categorySetService.setCategories(99, null) },
+      Error,
+      "transaction with id 99 doesn't exist"
+    );
   })
 
   it('sets categories', function () {
@@ -45,31 +49,28 @@ describe('setting categories', function () {
     ];
 
     // create record to update
-    return dbUtils.insert(this.instance, 'transactions', transactionData)
-      .then((transactionRecord) => {
-        // set the categories
-        return categorySetService.setCategories(transactionRecord.id, categories)
-      })
-      // verify the categories were updated correctly
-      .then((updatedRecord) => {
-        expect(updatedRecord).to.deep.contain({
-          id: 1,
-          categories: categories
-        });
-      })
-  })
+    const transactionRecord =  dbUtils.insert(this.instance, 'transactions', transactionData);
+    // set the categories
+    const updatedRecord =  categorySetService.setCategories(transactionRecord.id, categories);
+    // verify the categories were updated correctly
+    expect(updatedRecord).to.deep.contain({
+      id: 1,
+      categories: categories
+    });
+  });
 
   it('it throws an error for categories that do not total the amount', function () {
     let categorySetService = new CategorySetService(this.instance);
     let categories = [{ key: 'office_supplies', amount: -650 }];
 
     // create record to update
-    return dbUtils.insert(this.instance, 'transactions', transactionData)
-      .then((transactionRecord) => {
-        // attempt to set the categories
-        return expect(categorySetService.setCategories(transactionRecord.id, categories))
-          .to.be.rejectedWith('categories sum -650 must add up to transaction amount of -1250');
-      })
+    const transactionRecord = dbUtils.insert(this.instance, 'transactions', transactionData)
+    // attempt to set the categories
+    assert.throws(
+      () => { categorySetService.setCategories(transactionRecord.id, categories) },
+      Error,
+      "categories sum -650 must add up to transaction amount of -1250"
+    );
   })
 
 })

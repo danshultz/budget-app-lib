@@ -61,8 +61,8 @@ var transactionData = [{
 describe('Transcation Category Report', function () {
   beforeEach(function () {
     const instance = this.instance = db.getInstance(':memory:');
-    return db.migrate(instance, noopLogger)
-      .then(() => dbUtils.insertAll(instance, 'transactions', transactionData))
+    db.migrate(instance, noopLogger)
+    dbUtils.insertAll(instance, 'transactions', transactionData);
   });
 
   afterEach(function () {
@@ -73,21 +73,19 @@ describe('Transcation Category Report', function () {
     const [year, month] = [2018, 1];
     const transactionCategoryReport  = new TransactionCategoryReport(this.instance)
 
-    return transactionCategoryReport.getReport({ endYear: year, endMonth: month })
-      .then((report) => expect(report).to.be.empty)
+    const report = transactionCategoryReport.getReport({ endYear: year, endMonth: month });
+    expect(report).to.be.empty;
   })
 
   it('return a propery built collection of data', function () {
     const [year, month] = [2019, 1];
-    const transactionCategoryReport  = new TransactionCategoryReport(this.instance)
+    const transactionCategoryReport  = new TransactionCategoryReport(this.instance);
 
-    return transactionCategoryReport.getReport({ endYear: year, endMonth: month })
-      .then((report) => {
-        expect(report).to.deep.equal([
-          { year: 2018, month: 8, transactionCategoryId: 18, amount: -5000 },
-          { year: 2018, month: 10, transactionCategoryId: 5, amount: -600 },
-          { year: 2018, month: 10, transactionCategoryId: 12, amount: -1550 }
-        ])
-      })
+    const report = transactionCategoryReport.getReport({ endYear: year, endMonth: month });
+    expect(report).to.deep.equal([
+      { year: 2018, month: 8, transactionCategoryId: 18, amount: -5000 },
+      { year: 2018, month: 10, transactionCategoryId: 5, amount: -600 },
+      { year: 2018, month: 10, transactionCategoryId: 12, amount: -1550 }
+    ]);
   })
 });

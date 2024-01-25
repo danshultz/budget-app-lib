@@ -63,8 +63,8 @@ var transactionData = [{
 describe('fetching transactions', function () {
   beforeEach(function () {
     const instance = this.instance = db.getInstance(':memory:');
-    return db.migrate(instance, noopLogger)
-      .then(() => dbUtils.insertAll(instance, 'transactions', transactionData))
+    db.migrate(instance, noopLogger);
+    dbUtils.insertAll(instance, 'transactions', transactionData);
   });
 
   afterEach(function () {
@@ -75,70 +75,62 @@ describe('fetching transactions', function () {
 
     it('returns all transactions by default', function () {
       const transactionLoader = new TransactionLoader(this.instance);
-      return transactionLoader.getTransactions().then(({ records, count }) => {
-        expect(records.length).to.eq(4);
-        expect(count).to.eq(4);
-      })
+      const { records, count } = transactionLoader.getTransactions();
+      expect(records.length).to.eq(4);
+      expect(count).to.eq(4);
     })
 
     it('returns transactions by account', function () {
       const transactionLoader = new TransactionLoader(this.instance);
-      return transactionLoader.getTransactions({ accountId: 2 }).then(({ records, count }) => {
-        expect(records.length).to.eq(1);
-        expect(count).to.eq(1);
-      })
+      const { records, count } = transactionLoader.getTransactions({ accountId: 2 })
+      expect(records.length).to.eq(1);
+      expect(count).to.eq(1);
     })
 
     it('returns transactions by pages', function () {
       const transactionLoader = new TransactionLoader(this.instance);
-      return transactionLoader.getTransactions({ page: 2, pageSize: 3 }).then(({ records, count }) => {
-        expect(records.length).to.eq(1);
-        expect(count).to.eq(4);
-      })
+      const { records, count } = transactionLoader.getTransactions({ page: 2, pageSize: 3 });
+      expect(records.length).to.eq(1);
+      expect(count).to.eq(4);
     })
 
     it('returns transactions by pages and accounts', function () {
       const transactionLoader = new TransactionLoader(this.instance);
       const filters = { accountId: 1, page: 2, pageSize: 1 };
 
-      return transactionLoader.getTransactions(filters).then(({ records, count }) => {
-        expect(records.length).to.eq(1);
-        expect(count).to.eq(3);
-      })
+      const { records, count } = transactionLoader.getTransactions(filters);
+      expect(records.length).to.eq(1);
+      expect(count).to.eq(3);
     })
 
     it('returns transactions by account and uncategorized', function () {
       const transactionLoader = new TransactionLoader(this.instance);
       const filters = { uncategorizedOnly: true, accountId: 1 };
 
-      return transactionLoader.getTransactions(filters).then(({ records, count }) => {
-        // returns both uncategorized transactions instead of all 3 for the account
-        expect(records.length).to.eq(2);
-        expect(count).to.eq(2);
-      })
+      const { records, count } = transactionLoader.getTransactions(filters);
+      // returns both uncategorized transactions instead of all 3 for the account
+      expect(records.length).to.eq(2);
+      expect(count).to.eq(2);
     })
 
     it('returns transactions for a set of categories', function () {
       const transactionLoader = new TransactionLoader(this.instance);
       const filters = { categoryId: 1 };
 
-      return transactionLoader.getTransactions(filters).then(({ records, count }) => {
-        // returns both uncategorized transactions instead of all 3 for the account
-        expect(records.length).to.eq(1);
-        expect(count).to.eq(1);
-        expect(records[0].fit_id).to.eq('4223317601201810108')
-      })
+      const { records, count } = transactionLoader.getTransactions(filters);
+      // returns both uncategorized transactions instead of all 3 for the account
+      expect(records.length).to.eq(1);
+      expect(count).to.eq(1);
+      expect(records[0].fit_id).to.eq('4223317601201810108')
     })
   })
 
   describe('#getTransactionsForMonth', function () {
     it('returns all transactions for a given month and year', function () {
       const transactionLoader = new TransactionLoader(this.instance);
-      return transactionLoader.getTransactionsForMonth({ month: 8, year: 2018 }).then((records) => {
-        expect(records.length).to.eq(1);
-      })
+      const records = transactionLoader.getTransactionsForMonth({ month: 8, year: 2018 })
+      expect(records.length).to.eq(1);
     })
   })
-
 
 });

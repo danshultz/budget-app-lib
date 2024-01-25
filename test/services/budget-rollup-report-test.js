@@ -61,8 +61,8 @@ var transactionData = [{
 describe('Budget Rollup Report', function () {
   beforeEach(function () {
     const instance = this.instance = db.getInstance(':memory:');
-    return db.migrate(instance, noopLogger)
-      .then(() => dbUtils.insertAll(instance, 'transactions', transactionData))
+    db.migrate(instance, noopLogger);
+    dbUtils.insertAll(instance, 'transactions', transactionData);
   });
 
   afterEach(function () {
@@ -73,8 +73,8 @@ describe('Budget Rollup Report', function () {
     const [year, month] = [2018, 1];
     const budgetRollupReport = new BudgetRollupReport(this.instance)
 
-    return budgetRollupReport.getReport({ endYear: year, endMonth: month })
-      .then((budget) => expect(budget).to.be.empty)
+    const budget = budgetRollupReport.getReport({ endYear: year, endMonth: month })
+    expect(budget).to.be.empty
   })
 
   it('return a propery built collection of data', function () {
@@ -85,17 +85,14 @@ describe('Budget Rollup Report', function () {
       { categoryId: 99, amount: 1234 }
     ]
 
-    return budgetFactory.create(this.instance, { year, month: 8, totalIncome: 43200 })
-      .then(() => budgetFactory.create(this.instance, { year, month: 10, totalIncome: 22100, categories: octCategories }))
-      .then(() => budgetRollupReport.getReport({ endYear: year, endMonth: 10 }))
-      .then((budgetReport) => {
-        expect(budgetReport).to.deep.equal([
-          { categoryId: 5, budgetAmount: null, transactionAmount: -600 },
-          { categoryId: 12, budgetAmount: 9000, transactionAmount: -1550 },
-          { categoryId: 18, budgetAmount: null, transactionAmount: -5000 },
-          { categoryId: 99, budgetAmount: 1234, transactionAmount: null }
-        ])
-      })
-
+    budgetFactory.create(this.instance, { year, month: 8, totalIncome: 43200 });
+    budgetFactory.create(this.instance, { year, month: 10, totalIncome: 22100, categories: octCategories });
+    const budgetReport = budgetRollupReport.getReport({ endYear: year, endMonth: 10 });
+    expect(budgetReport).to.deep.equal([
+      { categoryId: 5, budgetAmount: null, transactionAmount: -600 },
+      { categoryId: 12, budgetAmount: 9000, transactionAmount: -1550 },
+      { categoryId: 18, budgetAmount: null, transactionAmount: -5000 },
+      { categoryId: 99, budgetAmount: 1234, transactionAmount: null }
+    ]);
   })
 });

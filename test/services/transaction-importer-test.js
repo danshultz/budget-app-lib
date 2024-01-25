@@ -21,39 +21,36 @@ var transactions = [{
 var accountId = 4;
 
 describe('importing transactions', function () {
-  beforeEach(function (done) {
+  beforeEach(function () {
     let instance = this.instance = db.getInstance(':memory:');
-    db.migrate(instance, noopLogger).then(done).catch(done);
+    db.migrate(instance, noopLogger);
   });
 
   afterEach(function () {
     db.clearInstances();
   });
 
-  it('imports the transactions', function (done) {
+  it('imports the transactions', function () {
     let importer = new TransactionImporter(this.instance, accountId);
 
-    importer.import(transactions, 5000)
-      .then(() => this.instance.all('SELECT * FROM transactions'))
-      .then((data) => {
-        expect(data.length).to.equal(2);
-        expect(data[0]).to.deep.contain({
-          fit_id: '219867',
-          type: 'INT',
-          date: '2005-08-11 08:00:00',
-          description: null,
-          memo: null,
-          name: 'Interest Charge',
-          payee: null,
-          check_number: null,
-          amount: -2300,
-          balance: 5000,
-          account_id: 4
-        });
+    importer.import(transactions, 5000);
+    const statement = this.instance.prepare('SELECT * FROM transactions');
+    const data = statement.all();
+    expect(data.length).to.equal(2);
+    expect(data[0]).to.deep.contain({
+      fit_id: '219867',
+      type: 'INT',
+      date: '2005-08-11 08:00:00',
+      description: null,
+      memo: null,
+      name: 'Interest Charge',
+      payee: null,
+      check_number: null,
+      amount: -2300,
+      balance: 5000,
+      account_id: 4
+    });
 
-        expect(data[1].balance).to.equal(7300);
-        done();
-      })
-      .catch(done);
+    expect(data[1].balance).to.equal(7300);
   });
 });

@@ -23,9 +23,9 @@ var transactionData = {
 }
 
 describe('setting the description', function () {
-  beforeEach(function (done) {
+  beforeEach(function () {
     let instance = this.instance = db.getInstance(':memory:');
-    db.migrate(instance, noopLogger).then(done).catch(done);
+    db.migrate(instance, noopLogger);
   });
 
   afterEach(function () {
@@ -34,25 +34,25 @@ describe('setting the description', function () {
 
   it('fails when attempting to set the description for an invalid transaction', function () {
     let descriptionSetService = new DesciptionSetService(this.instance);
-    return expect(descriptionSetService.setDescription(99, 'foo')).to.be.rejectedWith("transaction with id 99 doesn't exist");
+    assert.throws(
+      () => { descriptionSetService.setDescription(99, 'foo') },
+      Error,
+      "transaction with id 99 doesn't exist"
+    );
   })
 
   it('sets categories', function () {
     let descriptionSetService = new DesciptionSetService(this.instance);
 
     // create record to update
-    return dbUtils.insert(this.instance, 'transactions', transactionData)
-      .then((transactionRecord) => {
-        // set the description
-        return descriptionSetService.setDescription(transactionRecord.id, 'test description')
-      })
-      // verify the description was updated correctly
-      .then((updatedRecord) => {
-        expect(updatedRecord).to.deep.contain({
-          id: 1,
-          description: 'test description'
-        });
-      })
+    const transactionRecord = dbUtils.insert(this.instance, 'transactions', transactionData);
+    // set the description
+    const updatedRecord = descriptionSetService.setDescription(transactionRecord.id, 'test description');
+    // verify the description was updated correctly
+    expect(updatedRecord).to.deep.contain({
+      id: 1,
+      description: 'test description'
+    });
   })
 
 })
